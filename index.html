@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Efeito Reservas · JP Estrategista</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0E0E0E;
+      --bg2:      #141414;
+      --surface:  #1C1C1C;
+      --gold:     #C9A84C;
+      --gold-dim: rgba(201,168,76,.12);
+      --gold-mid: rgba(201,168,76,.25);
+      --white:    #F7F5F0;
+      --muted:    #999999;
+      --border:   #2A2A2A;
+      --ease:     cubic-bezier(0.16,1,0.3,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── GRAIN ─── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none; opacity: .08;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100svh;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      padding: 80px 24px 64px;
+    }
+    .hero-glow {
+      position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,.18) 0%, rgba(14,14,14,0) 70%);
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      text-align: center;
+      max-width: 680px;
+      width: 100%;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .32em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 40px;
+    }
+    .hero-eyebrow span { width: 24px; height: 1px; background: var(--gold); display: block; }
+
+    .hero-h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: clamp(36px, 8vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .hero-h1 em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 17px);
+      font-weight: 400;
+      line-height: 1.75;
+      color: rgba(247,245,240,.55);
+      max-width: 520px;
+      margin: 24px auto 20px;
+    }
+    .hero-desc {
+      font-size: clamp(16px, 2.2vw, 20px);
+      font-weight: 600;
+      line-height: 1.55;
+      color: var(--white);
+      max-width: 520px;
+      margin: 0 auto 44px;
+    }
+    .hero-btns {
+      display: flex; align-items: center; justify-content: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .btn-primary {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .28em; text-transform: uppercase;
+      color: #0E0E0E;
+      background: var(--gold);
+      padding: 16px 32px;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: .88; }
+    .btn-ghost {
+      font-size: 14px; font-weight: 400;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .btn-ghost:hover { color: var(--white); }
+    .hero-micro {
+      font-size: 12px; font-weight: 400;
+      letter-spacing: .1em;
+      color: rgba(247,245,240,.4);
+      margin-top: 18px;
+    }
+
+    /* ─── SECTION SHARED ─── */
+    .sec { padding: 96px 24px; }
+    .sec-alt { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .sec-head {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 56px;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .32em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+    }
+    .eyebrow span { width: 20px; height: 1px; background: var(--gold); display: block; }
+    .sec-h2 {
+      font-weight: 800;
+      font-size: clamp(28px, 6vw, 52px);
+      letter-spacing: -.03em; line-height: 1.05;
+      color: var(--white);
+    }
+    .sec-h2 em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-weight: 400;
+      color: var(--gold);
+    }
+    .sec-intro {
+      font-size: 16px; font-weight: 400;
+      line-height: 1.75; color: rgba(247,245,240,.65);
+      margin-top: 16px;
+    }
+
+    /* ─── SISTEMA CARDS ─── */
+    .sys-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      background: var(--border);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (min-width: 640px) {
+      .sys-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 960px) {
+      .sys-grid { grid-template-columns: repeat(5, 1fr); }
+    }
+    .sys-card {
+      background: var(--bg2);
+      padding: 36px 28px;
+      position: relative;
+      transition: background .25s;
+    }
+    .sys-card:hover { background: var(--surface); }
+    .sys-num {
+      font-weight: 800; font-size: 64px;
+      letter-spacing: -.04em; line-height: 1;
+      color: var(--gold); opacity: .07;
+      position: absolute; bottom: 12px; right: 16px;
+      pointer-events: none;
+    }
+    .sys-lbl {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); display: block; margin-bottom: 16px;
+    }
+    .sys-title {
+      font-size: 17px; font-weight: 700;
+      letter-spacing: -.02em; color: var(--white);
+      margin-bottom: 10px; line-height: 1.3;
+    }
+    .sys-desc {
+      font-size: 14px; font-weight: 400;
+      line-height: 1.75; color: rgba(247,245,240,.6);
+    }
+
+    /* ─── PROCESSO ─── */
+    .proc-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      background: var(--border);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (min-width: 640px) {
+      .proc-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 960px) {
+      .proc-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .step {
+      background: var(--bg);
+      padding: 40px 28px 48px;
+      position: relative; overflow: hidden;
+      transition: background .25s;
+    }
+    .step:hover { background: var(--surface); }
+    .step-ghost {
+      position: absolute; bottom: -8px; right: 12px;
+      font-weight: 800; font-size: 96px;
+      color: var(--border); line-height: 1;
+      letter-spacing: -.05em;
+      transition: color .3s;
+      pointer-events: none; user-select: none;
+    }
+    .step:hover .step-ghost { color: var(--gold-dim); }
+    .step-lbl {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: var(--gold); display: block; margin-bottom: 16px;
+    }
+    .step-title {
+      font-size: 18px; font-weight: 700;
+      letter-spacing: -.02em; color: var(--white);
+      margin-bottom: 10px; position: relative; z-index: 1;
+    }
+    .step-desc {
+      font-size: 14px; font-weight: 400;
+      line-height: 1.75; color: rgba(247,245,240,.6);
+      position: relative; z-index: 1;
+    }
+
+    /* ─── PARA QUEM ─── */
+    .pq-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      background: var(--border);
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (min-width: 720px) {
+      .pq-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .pq-card { padding: 48px 36px; }
+    .pq-card.yes { background: var(--bg2); }
+    .pq-card.no  { background: var(--surface); }
+    .pq-title {
+      font-size: 16px; font-weight: 700;
+      letter-spacing: -.01em;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 28px;
+    }
+    .pq-card.yes .pq-title { color: var(--gold); }
+    .pq-card.no  .pq-title { color: var(--muted); }
+    .pq-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .pq-list li {
+      font-size: 15px; font-weight: 400;
+      line-height: 1.65; color: rgba(247,245,240,.8);
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .pq-list li::before { content: '·'; color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+    .pq-card.yes .pq-list li::before { content: '✦'; color: var(--gold); }
+    .pq-note {
+      font-size: 13px; font-weight: 400;
+      letter-spacing: .03em; color: var(--muted);
+      margin-top: 28px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── CTA / FORM ─── */
+    .s-cta {
+      padding: 96px 24px;
+      background: var(--bg);
+    }
+    .cta-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    @media (min-width: 768px) {
+      .cta-wrap { grid-template-columns: 1fr 1fr; align-items: start; }
+      .cta-sticky { position: sticky; top: 80px; }
+    }
+    .cta-h {
+      font-weight: 800;
+      font-size: clamp(36px, 6vw, 64px);
+      letter-spacing: -.03em; line-height: 1.0;
+      color: var(--white); margin-bottom: 20px;
+    }
+    .cta-h em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-weight: 400;
+      color: var(--gold);
+    }
+    .cta-p {
+      font-size: 16px; font-weight: 400;
+      line-height: 1.75; color: rgba(247,245,240,.6);
+      margin-bottom: 32px;
+    }
+    .cta-box {
+      border-left: 2px solid var(--gold);
+      padding: 18px 20px;
+      background: var(--gold-dim);
+    }
+    .cta-box-title {
+      font-size: 13px; font-weight: 700;
+      color: var(--white); margin-bottom: 6px;
+      letter-spacing: -.01em;
+    }
+    .cta-box-text {
+      font-size: 14px; font-weight: 400;
+      line-height: 1.65; color: rgba(247,245,240,.65);
+    }
+
+    /* Form */
+    .form-wrap {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 40px 32px;
+    }
+    @media (max-width: 480px) {
+      .form-wrap { padding: 28px 20px; }
+    }
+    .form-hd {
+      margin-bottom: 32px; padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-title {
+      font-size: 18px; font-weight: 700;
+      letter-spacing: -.02em; color: var(--white);
+      margin-bottom: 4px;
+    }
+    .form-sub {
+      font-size: 12px; font-weight: 400;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .fg { margin-bottom: 18px; }
+    .fl {
+      display: block;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .28em; text-transform: uppercase;
+      color: rgba(247,245,240,.55); margin-bottom: 8px;
+    }
+    .fi, .fs, .fta {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 400;
+      padding: 13px 16px;
+      outline: none;
+      border-radius: 0;
+      -webkit-appearance: none;
+      transition: border-color .2s;
+    }
+    .fi::placeholder, .fta::placeholder { color: #555; }
+    .fi:focus, .fs:focus, .fta:focus { border-color: var(--gold); }
+    .fs {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 16px center;
+    }
+    .fs option { background: #1C1C1C; color: var(--white); }
+    .fta { resize: vertical; min-height: 88px; }
+    .f-btn {
+      width: 100%;
+      background: var(--gold);
+      color: #0E0E0E;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: .28em; text-transform: uppercase;
+      padding: 18px;
+      cursor: pointer;
+      transition: opacity .2s;
+      margin-top: 4px;
+    }
+    .f-btn:hover { opacity: .88; }
+    .f-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .f-note {
+      font-size: 12px; font-weight: 400;
+      letter-spacing: .04em; color: var(--muted);
+      text-align: center; margin-top: 14px;
+    }
+    .f-error {
+      font-size: 12px; color: #E07070;
+      margin-top: 6px; display: none;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+    .ft-big {
+      font-weight: 800;
+      font-size: clamp(40px, 10vw, 96px);
+      letter-spacing: -.04em; line-height: .92;
+      color: var(--white); text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+    .ft-big em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic; font-weight: 400;
+      color: var(--gold);
+    }
+    .ft-copy {
+      font-size: 13px; font-weight: 400;
+      letter-spacing: .04em; color: var(--muted);
+      line-height: 1.8;
+    }
+
+    /* ─── REVEAL ─── */
+    .reveal {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .7s var(--ease), transform .7s var(--ease);
+    }
+    .reveal.vis { opacity: 1; transform: none; }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 40px; height: 1px;
+      background: var(--gold);
+      margin: 0 auto 0;
+      opacity: .4;
+    }
+
+    /* ─── MOBILE EXTRA ─── */
+    @media (max-width: 480px) {
+      .sec { padding: 72px 20px; }
+      .s-cta { padding: 72px 20px; }
+      .pq-card { padding: 36px 24px; }
+      .sys-card { padding: 28px 20px; }
+      .step { padding: 32px 20px 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span></span>Efeito Reservas<span></span></div>
+    <h1 class="hero-h1">
+      Sua agência de viagens<br>
+      depende de você<br>
+      <em>pra tudo?</em>
+    </h1>
+    <p class="hero-sub">Cliente pedindo orçamento sem resposta, Instagram sem retorno, proposta enviada e silêncio. O dia acaba e o follow-up continua igual.</p>
+    <p class="hero-desc">Eu instalo o sistema que atende, qualifica e fecha reserva enquanto você está cuidando do cliente que já importa.</p>
+    <div class="hero-btns">
+      <a href="#conversar" class="btn-primary">Quero conversar</a>
+      <a href="#sistema" class="btn-ghost">Ver como funciona →</a>
+    </div>
+    <p class="hero-micro">Conversa gratuita · Sem compromisso</p>
+  </div>
+</section>
+
+<!-- SISTEMA -->
+<section class="sec sec-alt" id="sistema">
+  <div class="sec-head reveal">
+    <div class="eyebrow"><span></span>O que eu instalo<span></span></div>
+    <h2 class="sec-h2">O sistema que fecha reserva<br><em>no seu lugar</em></h2>
+    <p class="sec-intro">Cinco peças conectadas para tirar você do operacional e colocar mais reservas no mês</p>
+  </div>
+  <div class="sys-grid">
+    <div class="sys-card reveal">
+      <span class="sys-num">01</span>
+      <span class="sys-lbl">01</span>
+      <h3 class="sys-title">Posicionamento</h3>
+      <p class="sys-desc">Define quem você atende, que tipo de viagem você vende e por que o cliente certo paga mais por você do que busca no Google.</p>
+    </div>
+    <div class="sys-card reveal">
+      <span class="sys-num">02</span>
+      <span class="sys-lbl">02</span>
+      <h3 class="sys-title">Conteúdo</h3>
+      <p class="sys-desc">Instagram com estratégia pra atrair quem já quer viajar e gerar orçamento, sem depender de inspiração ou postar todo dia.</p>
+    </div>
+    <div class="sys-card reveal">
+      <span class="sys-num">03</span>
+      <span class="sys-lbl">03</span>
+      <h3 class="sys-title">Atendimento automático</h3>
+      <p class="sys-desc">Agentes de IA que respondem o pedido de orçamento, qualificam o cliente e marcam conversa no seu lugar, qualquer hora.</p>
+    </div>
+    <div class="sys-card reveal">
+      <span class="sys-num">04</span>
+      <span class="sys-lbl">04</span>
+      <h3 class="sys-title">Anúncios</h3>
+      <p class="sys-desc">Tráfego direcionado pra quem já está pensando em viajar, com funil pronto pra receber, qualificar e converter.</p>
+    </div>
+    <div class="sys-card reveal">
+      <span class="sys-num">05</span>
+      <span class="sys-lbl">05</span>
+      <h3 class="sys-title">Aquisição previsível</h3>
+      <p class="sys-desc">Orçamentos chegando todo mês com sistema rodando, sem depender de indicação ou de pico de post.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESSO -->
+<section class="sec" id="processo">
+  <div class="sec-head reveal">
+    <div class="eyebrow"><span></span>Como funciona<span></span></div>
+    <h2 class="sec-h2">Do diagnóstico ao<br><em>sistema rodando</em></h2>
+  </div>
+  <div class="proc-grid">
+    <div class="step reveal">
+      <span class="step-lbl">Etapa 01</span>
+      <h3 class="step-title">Conversa</h3>
+      <p class="step-desc">Você me conta como a agência funciona hoje e onde trava.</p>
+      <span class="step-ghost">01</span>
+    </div>
+    <div class="step reveal">
+      <span class="step-lbl">Etapa 02</span>
+      <h3 class="step-title">Diagnóstico</h3>
+      <p class="step-desc">Eu mapeio o que está faltando e te mostro o que muda na prática.</p>
+      <span class="step-ghost">02</span>
+    </div>
+    <div class="step reveal">
+      <span class="step-lbl">Etapa 03</span>
+      <h3 class="step-title">Instalação</h3>
+      <p class="step-desc">Monto o sistema completo: conteúdo, atendimento automático e captação.</p>
+      <span class="step-ghost">03</span>
+    </div>
+    <div class="step reveal">
+      <span class="step-lbl">Etapa 04</span>
+      <h3 class="step-title">Acompanhamento</h3>
+      <p class="step-desc">Fico junto ajustando até funcionar do jeito certo.</p>
+      <span class="step-ghost">04</span>
+    </div>
+  </div>
+</section>
+
+<!-- PARA QUEM -->
+<section class="sec sec-alt" id="para-quem">
+  <div class="sec-head reveal">
+    <div class="eyebrow"><span></span>Qualificação<span></span></div>
+    <h2 class="sec-h2">Pra quem isso<br><em>faz sentido</em></h2>
+  </div>
+  <div class="pq-grid">
+    <div class="pq-card yes reveal">
+      <h3 class="pq-title"><span>✦</span> É pra você se</h3>
+      <ul class="pq-list">
+        <li>Você já vende viagens, atende bem, mas todo orçamento passa pela sua mão</li>
+        <li>Quer fechar mais reservas sem estender o horário de trabalho</li>
+        <li>Já tentou curso, social media, ferramenta e a agenda continua instável</li>
+        <li>Decide por resultado, não por promessa</li>
+      </ul>
+    </div>
+    <div class="pq-card no reveal">
+      <h3 class="pq-title"><span>✕</span> Não é pra você se</h3>
+      <ul class="pq-list">
+        <li>Você ainda está começando e não tem clientes recorrentes</li>
+        <li>Quer aprender a fazer, não ter alguém montando por você</li>
+        <li>Não tem orçamento pra investir agora</li>
+      </ul>
+      <p class="pq-note">Sem problema. Quando fizer sentido, me procura.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / FORMULÁRIO -->
+<section class="s-cta" id="conversar">
+  <div class="cta-wrap">
+    <div class="cta-sticky reveal">
+      <div class="eyebrow"><span></span>Próximo passo<span></span></div>
+      <h2 class="cta-h">Vamos<br><em>conversar</em></h2>
+      <p class="cta-p">Seis perguntas rápidas e eu já chego na conversa sabendo da sua agência.</p>
+      <div class="cta-box">
+        <p class="cta-box-title">Sem pressão de venda</p>
+        <p class="cta-box-text">A conversa é sobre a sua agência. Você decide se faz sentido seguir.</p>
+      </div>
+    </div>
+    <div class="form-wrap reveal">
+      <div class="form-hd">
+        <h3 class="form-title">Preencha pra começar</h3>
+        <p class="form-sub">Leva 1 minuto · Sem compromisso</p>
+      </div>
+      <form id="leadForm" novalidate>
+        <div class="fg">
+          <label class="fl" for="f-nome">Seu nome</label>
+          <input type="text" id="f-nome" class="fi" placeholder="Como você se chama" autocomplete="name">
+          <p class="f-error" id="err-nome">Informe seu nome</p>
+        </div>
+        <div class="fg">
+          <label class="fl" for="f-zap">Seu WhatsApp</label>
+          <input type="tel" id="f-zap" class="fi" placeholder="(00) 00000-0000" autocomplete="tel">
+          <p class="f-error" id="err-zap">Informe seu WhatsApp</p>
+        </div>
+        <div class="fg">
+          <label class="fl" for="f-agencia">Como você trabalha hoje</label>
+          <input type="text" id="f-agencia" class="fi" placeholder="Ex: autônoma, pequena agência, equipe com mais pessoas" autocomplete="off">
+          <p class="f-error" id="err-agencia">Conte como você trabalha</p>
+        </div>
+        <div class="fg">
+          <label class="fl" for="f-fat">Faturamento mensal da agência</label>
+          <select id="f-fat" class="fs">
+            <option value="" disabled selected>Selecione a faixa</option>
+            <option value="Até R$5k por mês">Até R$5k por mês</option>
+            <option value="Entre R$5k e R$15k por mês">Entre R$5k e R$15k por mês</option>
+            <option value="Entre R$15k e R$40k por mês">Entre R$15k e R$40k por mês</option>
+            <option value="Acima de R$40k por mês">Acima de R$40k por mês</option>
+          </select>
+          <p class="f-error" id="err-fat">Selecione uma faixa</p>
+        </div>
+        <div class="fg">
+          <label class="fl" for="f-gargalo">O que mais trava a sua operação hoje</label>
+          <textarea id="f-gargalo" class="fta" placeholder="Ex: clientes que pedem orçamento e somem, follow-up perdido, Instagram que não gera reserva"></textarea>
+          <p class="f-error" id="err-gargalo">Conte o que trava a operação</p>
+        </div>
+        <div class="fg">
+          <label class="fl" for="f-tentou">Já tentou resolver isso antes? Como foi</label>
+          <textarea id="f-tentou" class="fta" placeholder="Ex: fiz curso, contratei social media, comprei ferramenta, nada resolveu de vez"></textarea>
+        </div>
+        <button type="submit" class="f-btn" id="submitBtn">Continuar no WhatsApp →</button>
+        <p class="f-note">Suas respostas vão direto pra mim</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-big reveal">Vamos<br><em>Conversar?</em></div>
+  <p class="ft-copy">© 2026 João Paulo da Silva · Estrategista de IA para o mercado de turismo</p>
+</footer>
+
+<script>
+  // ── Reveal on scroll ──
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('vis'), i * 60);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // ── Mask telefone ──
+  document.getElementById('f-zap').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g,'');
+    if (v.length > 11) v = v.slice(0,11);
+    if (v.length > 6) v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+    else if (v.length > 2) v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+    else if (v.length > 0) v = '(' + v;
+    this.value = v;
+  });
+
+  // ── Form submit → WhatsApp ──
+  const WHATS = '5561981784728';
+
+  document.getElementById('leadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const nome    = document.getElementById('f-nome').value.trim();
+    const zap     = document.getElementById('f-zap').value.trim();
+    const agencia = document.getElementById('f-agencia').value.trim();
+    const fat     = document.getElementById('f-fat').value;
+    const gargalo = document.getElementById('f-gargalo').value.trim();
+    const tentou  = document.getElementById('f-tentou').value.trim();
+
+    // Validação
+    let ok = true;
+    const show = (id, show) => {
+      document.getElementById(id).style.display = show ? 'block' : 'none';
+    };
+    if (!nome)    { show('err-nome', true);    ok = false; } else show('err-nome', false);
+    if (!zap)     { show('err-zap', true);     ok = false; } else show('err-zap', false);
+    if (!agencia) { show('err-agencia', true); ok = false; } else show('err-agencia', false);
+    if (!fat)     { show('err-fat', true);     ok = false; } else show('err-fat', false);
+    if (!gargalo) { show('err-gargalo', true); ok = false; } else show('err-gargalo', false);
+
+    if (!ok) {
+      document.querySelector('.f-error[style*="block"]')
+        ?.closest('.fg')?.querySelector('input,select,textarea')?.focus();
+      return;
+    }
+
+    const msg =
+      'Oi JP, quero um diagnóstico do meu funil de vendas para minha agência de viagens, meus dados são:\n\n' +
+      '👤 Nome: ' + nome + '\n' +
+      '📱 WhatsApp: ' + zap + '\n' +
+      '🏢 Como trabalho: ' + agencia + '\n' +
+      '💰 Faturamento: ' + fat + '\n' +
+      '🔧 Maior gargalo: ' + gargalo +
+      (tentou ? '\n\n🔄 O que já tentou: ' + tentou : '');
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Abrindo o WhatsApp ✦';
+    btn.disabled = true;
+
+    window.open('https://wa.me/' + WHATS + '?text=' + encodeURIComponent(msg), '_blank');
+
+    setTimeout(() => {
+      btn.textContent = 'Continuar no WhatsApp →';
+      btn.disabled = false;
+    }, 3000);
+  });
+</script>
+</body>
+</html>
