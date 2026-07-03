@@ -76,6 +76,7 @@
       letter-spacing: -.03em;
       color: var(--white);
       margin-bottom: 12px;
+      text-wrap: balance;
     }
     .hero-h1 em {
       font-family: 'Playfair Display', serif;
@@ -97,7 +98,7 @@
       font-weight: 600;
       line-height: 1.55;
       color: var(--white);
-      max-width: 520px;
+      max-width: 600px;
       margin: 0 auto 44px;
     }
     .hero-btns {
@@ -471,12 +472,11 @@
   <div class="hero-inner">
     <div class="hero-eyebrow"><span></span>Efeito Reservas<span></span></div>
     <h1 class="hero-h1">
-      Sua agência de viagens<br>
-      depende de você<br>
-      <em>pra tudo?</em>
+      Sua agência de<br>
+      viagens depende<br>
+      de você <em>para tudo?</em>
     </h1>
-    <p class="hero-sub">Cliente pedindo orçamento sem resposta, Instagram sem retorno, proposta enviada e silêncio. O dia acaba e o follow-up continua igual.</p>
-    <p class="hero-desc">Eu instalo o sistema que atende, qualifica e fecha reserva enquanto você está cuidando do cliente que já importa.</p>
+    <p class="hero-desc">Eu instalo o sistema que atende, qualifica e fecha reserva<br>enquanto você está cuidando do cliente que já importa</p>
     <div class="hero-btns">
       <a href="#conversar" class="btn-primary">Quero conversar</a>
       <a href="#sistema" class="btn-ghost">Ver como funciona →</a>
@@ -708,12 +708,12 @@
 
     const msg =
       'Oi JP, quero um diagnóstico do meu funil de vendas para minha agência de viagens, meus dados são:\n\n' +
-      '👤 Nome: ' + nome + '\n' +
-      '📱 WhatsApp: ' + zap + '\n' +
-      '🏢 Como trabalho: ' + agencia + '\n' +
-      '💰 Faturamento: ' + fat + '\n' +
-      '🔧 Maior gargalo: ' + gargalo +
-      (tentou ? '\n\n🔄 O que já tentou: ' + tentou : '');
+      '*Nome:* ' + nome + '\n' +
+      '*WhatsApp:* ' + zap + '\n' +
+      '*Como trabalho:* ' + agencia + '\n' +
+      '*Faturamento:* ' + fat + '\n' +
+      '*Maior gargalo:* ' + gargalo +
+      (tentou ? '\n\n*O que já tentou:* ' + tentou : '');
 
     const btn = document.getElementById('submitBtn');
     btn.textContent = 'Abrindo o WhatsApp ✦';
