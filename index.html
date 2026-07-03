@@ -737,7 +737,14 @@
     btn.textContent = 'Abrindo o WhatsApp ✦';
     btn.disabled = true;
 
-    window.open('https://wa.me/' + WHATS + '?text=' + encodeURIComponent(msg), '_blank');
+    const waUrl = 'https://wa.me/' + WHATS + '?text=' + encodeURIComponent(msg);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.location.href = waUrl;
+    } else {
+      window.open(waUrl, '_blank');
+    }
 
     setTimeout(() => {
       btn.textContent = 'Continuar no WhatsApp →';
