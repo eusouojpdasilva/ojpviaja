@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Diagnóstico — Onde Sua Agência Está Perdendo Reserva</title>
 <meta name="description" content="Diagnóstico rápido: descubra o que está travando as vendas da sua agência de viagens hoje.">
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '624939583104460');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=624939583104460&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
@@ -213,7 +232,9 @@
   var CONFIG = {
     whatsappNumber: "5561981784728",
     instagramUrl: "https://instagram.com/ojpviaja",
-    allowBack: true
+    allowBack: true,
+    // URL do Web App do Google Apps Script (termina em /exec). Vazio = não envia pra planilha.
+    sheetsEndpoint: ""
   };
 
   /* ============ Conteúdo ============ */
@@ -316,7 +337,22 @@
   var TOTAL = QUESTIONS.length;
 
   /* ============ Estado ============ */
-  var state = { screen: "start", name: "", answers: [], open: {} };
+  var state = { screen: "start", name: "", answers: [], picks: [], open: {} };
+
+  // Parâmetros de campanha capturados na chegada (persistem durante a sessão).
+  var UTM = (function () {
+    var out = {};
+    try {
+      var p = new URLSearchParams(location.search);
+      ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid"].forEach(function (k) {
+        var v = p.get(k);
+        if (v) out[k] = v;
+      });
+    } catch (e) {}
+    return out;
+  })();
+
+  var resultSent = false;
 
   var app = document.getElementById("app");
   var wrap = document.getElementById("wrap");
@@ -332,16 +368,29 @@
 
   function pad2(n) { return ("0" + n).slice(-2); }
 
-  function winner() {
+  function scoreMap() {
     var scores = { CAPTACAO: 0, ATENDIMENTO: 0, FECHAMENTO: 0, ESTRUTURA: 0 };
     state.answers.slice(0, 5).forEach(function (cat, i) {
       if (cat && scores.hasOwnProperty(cat)) scores[cat] += (i === 3 ? 2 : 1);
     });
+    return scores;
+  }
+
+  function winner() {
+    var scores = scoreMap();
     var vals = Object.keys(scores).map(function (k) { return scores[k]; });
     var max = Math.max.apply(null, vals);
     var top = Object.keys(scores).filter(function (k) { return scores[k] === max; });
     if (top.length > 1 && state.answers[3] && top.indexOf(state.answers[3]) > -1) return state.answers[3];
     return top[0];
+  }
+
+  // Texto da opção escolhida em cada uma das 7 perguntas ("" se não respondida).
+  function answerDetail() {
+    return QUESTIONS.map(function (q, i) {
+      var pick = state.picks[i];
+      return (pick != null && q.o[pick]) ? q.o[pick][1] : "";
+    });
   }
 
   function isQualified() {
@@ -356,6 +405,51 @@
     return "https://wa.me/" + digits + "?text=" + encodeURIComponent(msg);
   }
 
+  /* ============ Rastreamento e captura ============ */
+  function track(name, params, custom) {
+    if (typeof fbq !== "function") return;
+    try { fbq(custom ? "trackCustom" : "track", name, params || {}); } catch (e) {}
+  }
+
+  function sendToSheet(payload) {
+    if (!CONFIG.sheetsEndpoint) return;
+    try {
+      fetch(CONFIG.sheetsEndpoint, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  // Dispara uma vez quando a tela de resultado aparece: evento no Pixel + linha na planilha.
+  function captureResult() {
+    if (resultSent) return;
+    resultSent = true;
+    var win = winner();
+    var r = RESULTS[win];
+    var qualified = isQualified();
+    var detail = answerDetail();
+
+    track("QuizComplete", { gargalo: r.label, qualificado: qualified ? "sim" : "nao" }, true);
+
+    sendToSheet({
+      ts: new Date().toISOString(),
+      nome: state.name.trim(),
+      gargalo: r.label,
+      qualificado: qualified,
+      intencao: state.answers[5] || "",
+      faturamento: detail[6] || "",
+      respostas: detail,
+      scores: scoreMap(),
+      utm: UTM,
+      referrer: document.referrer || "",
+      pagina: location.href,
+      userAgent: navigator.userAgent
+    });
+  }
+
   /* ============ Transição ============ */
   function advance(next) {
     var screenEl = app.firstElementChild;
@@ -364,7 +458,7 @@
       setTimeout(function () {
         state.screen = next;
         render();
-        if (next === "result") window.scrollTo(0, 0);
+        if (next === "result") { window.scrollTo(0, 0); captureResult(); }
       }, 200);
     } else {
       state.screen = next;
@@ -525,13 +619,16 @@
         startBtn.disabled = !ok;
         startHint.textContent = ok ? "" : "Preencha seu nome";
       };
+      var begin = function () {
+        if (s.name.trim().length === 0) return;
+        track("QuizStart", {}, true);
+        advance(0);
+      };
       nameInput.addEventListener("input", function (e) { s.name = e.target.value; sync(); });
       nameInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" && s.name.trim().length > 0) advance(0);
+        if (e.key === "Enter") begin();
       });
-      startBtn.addEventListener("click", function () {
-        if (s.name.trim().length > 0) advance(0);
-      });
+      startBtn.addEventListener("click", begin);
     }
 
     Array.prototype.forEach.call(app.querySelectorAll("[data-pick]"), function (btn) {
@@ -543,6 +640,10 @@
         var answers = s.answers.slice();
         answers[idx] = cat;
         s.answers = answers;
+        var picks = s.picks.slice();
+        picks[idx] = pickIdx;
+        s.picks = picks;
+        track("QuizAnswer", { pergunta: idx + 1, opcao: QUESTIONS[idx].o[pickIdx][0] }, true);
         advance(idx + 1 < TOTAL ? idx + 1 : "result");
       });
     });
@@ -563,9 +664,20 @@
       });
     });
 
+    var waBtn = app.querySelector(".btn-gold-link.lg");
+    if (waBtn) waBtn.addEventListener("click", function () {
+      track("Lead", { content_name: "Diagnostico Efeito Reservas", gargalo: RESULTS[winner()].label });
+    });
+
+    var igBtn = app.querySelector(".darkcard .btn-gold-link:not(.lg)");
+    if (igBtn) igBtn.addEventListener("click", function () {
+      track("SeguirInstagram", {}, true);
+    });
+
     var restartBtn = app.querySelector("[data-restart]");
     if (restartBtn) restartBtn.addEventListener("click", function () {
-      state = { screen: "start", name: "", answers: [], open: {} };
+      state = { screen: "start", name: "", answers: [], picks: [], open: {} };
+      resultSent = false;
       app = document.getElementById("app");
       window.scrollTo(0, 0);
       render();
