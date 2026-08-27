@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico — Onde Sua Agência Está Perdendo Reserva</title>
+<meta name="description" content="Diagnóstico rápido: descubra o que está travando as vendas da sua agência de viagens hoje.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --black:#0E0E0E;
+    --gold:#C9A84C;
+    --off-white:#F7F5F0;
+    --cream:#EDE8DF;
+    --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--off-white)}
+  body{
+    font-family:var(--font);
+    color:var(--black);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
+  a:hover{color:var(--black)}
+
+  .shell{
+    min-height:100vh;
+    min-height:100dvh;
+    background:var(--off-white);
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- Header ---------- */
+  .topbar{position:sticky;top:0;z-index:5;background:var(--off-white)}
+  .track{height:3px;background:rgba(14,14,14,.08)}
+  .fill{height:3px;background:var(--gold);width:0;transition:width .3s ease}
+  .brandrow{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;max-width:620px;margin:0 auto;
+  }
+  .kicker{
+    font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--black);
+  }
+  .kicker.muted{color:rgba(14,14,14,.45)}
+
+  /* ---------- Body wrap ---------- */
+  .wrap{
+    flex:1;width:100%;max-width:620px;margin:0 auto;
+    padding:8px 24px 72px;
+    display:flex;flex-direction:column;
+    justify-content:center;
+  }
+  .wrap.top{justify-content:flex-start}
+
+  .screen{animation:fade .3s ease}
+  .screen.leaving{opacity:0;transform:translateY(8px)}
+  .screen{transition:opacity .2s ease,transform .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .rule{width:44px;height:1px;background:var(--gold);margin-bottom:28px}
+  .eyebrow{
+    font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:18px;
+  }
+
+  /* ---------- Start ---------- */
+  .start{padding:32px 0 24px}
+  h1{font-size:34px;line-height:1.05;font-weight:800;letter-spacing:-.01em;margin:0 0 18px;text-wrap:pretty}
+  .lede{font-size:16px;line-height:1.55;color:rgba(14,14,14,.7);margin:0 0 40px;max-width:42ch;text-wrap:pretty}
+
+  .startform{
+    border-top:1px solid rgba(14,14,14,.12);
+    padding-top:28px;display:flex;flex-direction:column;gap:24px;
+  }
+  .fieldlabel{
+    display:block;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(14,14,14,.55);margin-bottom:10px;
+  }
+  .namefield{
+    width:100%;padding:12px 0;font-size:17px;font-family:inherit;color:var(--black);
+    background:transparent;border:none;border-bottom:1px solid rgba(14,14,14,.25);
+    outline:none;border-radius:0;
+  }
+  .namefield:focus{border-bottom-color:var(--gold)}
+
+  .startrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .hint{font-size:12px;color:rgba(14,14,14,.45)}
+
+  .btn-primary{
+    font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.04em;
+    padding:16px 32px;border:1px solid transparent;border-radius:2px;
+    background:var(--gold);color:var(--black);cursor:pointer;
+    transition:opacity .15s ease;
+  }
+  .btn-primary:hover{opacity:.85}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed}
+
+  /* ---------- Question ---------- */
+  .q{padding:24px 0}
+  h2{font-size:25px;line-height:1.2;font-weight:800;letter-spacing:-.01em;margin:0 0 32px;text-wrap:pretty}
+  .options{display:flex;flex-direction:column;gap:10px}
+  .opt{
+    width:100%;text-align:left;display:flex;align-items:flex-start;gap:14px;
+    min-height:56px;padding:16px 18px;background:var(--cream);
+    border:1px solid rgba(14,14,14,.1);border-radius:2px;cursor:pointer;
+    font-family:inherit;font-size:15px;line-height:1.45;color:var(--black);
+    transition:border-color .15s ease,background .15s ease;
+  }
+  .opt:hover{border-color:var(--gold);background:#E6E0D5}
+  .opt .letter{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold);padding-top:3px}
+  .opt span:last-child{text-wrap:pretty}
+
+  .linkbtn{
+    background:transparent;border:none;padding:8px 0;font-family:inherit;
+    font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    color:rgba(14,14,14,.45);cursor:pointer;transition:color .15s ease;
+  }
+  .linkbtn:hover{color:var(--black)}
+  .back{margin-top:28px}
+
+  /* ---------- Result ---------- */
+  .result{padding:24px 0}
+  .result h1{font-size:30px;line-height:1.1;margin:0 0 20px}
+  .result .summary{font-size:16px;line-height:1.6;color:rgba(14,14,14,.75);margin:0 0 44px;text-wrap:pretty}
+
+  .section{border-top:1px solid rgba(14,14,14,.12);padding-top:36px}
+  .section + .section{margin-top:44px}
+  .section h2{font-size:22px;line-height:1.2;margin:0 0 24px}
+  .prose{display:flex;flex-direction:column;gap:18px;font-size:16px;line-height:1.6;color:rgba(14,14,14,.75)}
+  .prose p{margin:0;text-wrap:pretty}
+  .prose p.strong{font-weight:700;color:var(--black)}
+
+  .darkcard{
+    margin-top:44px;background:var(--black);color:var(--off-white);
+    padding:32px 26px;border-radius:2px;
+  }
+  .darkcard.tall{padding:34px 26px}
+  .darkcard .rule{width:36px;margin-bottom:22px}
+  .darkcard.tall .rule{margin-bottom:24px}
+  .darkcard h2{font-size:24px;line-height:1.15;font-weight:800;margin:0 0 18px;text-wrap:pretty}
+  .darkcard .dark-prose{display:flex;flex-direction:column;gap:18px;margin-bottom:28px}
+  .darkcard .dark-prose p{margin:0;font-size:16px;line-height:1.6;color:rgba(247,245,240,.88);text-wrap:pretty}
+  .darkcard .intro{margin:0 0 30px;font-size:16px;line-height:1.6;color:rgba(247,245,240,.88);text-wrap:pretty}
+
+  .btn-gold-link{
+    display:inline-block;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.04em;
+    padding:16px 28px;border-radius:2px;background:var(--gold);color:var(--black);
+    transition:opacity .15s ease;
+  }
+  .btn-gold-link.lg{font-size:14px;padding:18px 30px}
+  .btn-gold-link:hover{opacity:.85;color:var(--black)}
+
+  .advance-block{border-top:1px solid rgba(247,245,240,.15);padding-top:26px;margin-bottom:30px}
+  .advance-block .eyebrow{margin-bottom:18px}
+  .advance-block .steps{display:flex;flex-direction:column;gap:12px;font-size:15px;line-height:1.55;color:rgba(247,245,240,.88)}
+  .advance-block .steps p{margin:0;text-wrap:pretty}
+  .footnote{margin:20px 0 0;font-size:14px;line-height:1.55;color:rgba(247,245,240,.6);text-wrap:pretty}
+
+  /* ---------- Plan accordion ---------- */
+  .plan-label{margin:0 0 24px;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+  .plan .section h2{margin-bottom:6px}
+  .acc-list{display:flex;flex-direction:column;gap:8px}
+  .acc{background:var(--cream);border:1px solid rgba(14,14,14,.1);border-radius:2px}
+  .acc-head{
+    width:100%;text-align:left;display:flex;align-items:flex-start;gap:14px;
+    min-height:56px;padding:18px;background:transparent;border:none;cursor:pointer;
+    font-family:inherit;font-size:16px;font-weight:700;line-height:1.35;color:var(--black);
+  }
+  .acc-head .num{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold);padding-top:4px}
+  .acc-head .title{flex:1;text-wrap:pretty}
+  .acc-head .sign{font-size:18px;font-weight:400;color:var(--gold);padding-top:1px;transition:transform .2s ease}
+  .acc.open .acc-head .sign{transform:rotate(45deg)}
+  .acc-body{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,opacity .25s ease}
+  .acc.open .acc-body{max-height:1200px;opacity:1}
+  .acc-body-inner{padding:0 18px 22px 43px;display:flex;flex-direction:column;gap:16px}
+  .acc-body-inner p{margin:0;font-size:15px;line-height:1.6;color:rgba(14,14,14,.75);text-wrap:pretty}
+
+  .restart{margin-top:32px}
+
+  @media (max-width:420px){
+    h1{font-size:30px}
+    .result h1{font-size:26px}
+    h2{font-size:22px}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="brandrow">
+      <span class="kicker">@ojpviaja</span>
+      <span class="kicker muted" id="stepLabel">Menos de 3 minutos</span>
+    </div>
+  </div>
+  <div class="wrap" id="wrap">
+    <div id="app"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============ Configuração ============ */
+  var CONFIG = {
+    whatsappNumber: "5561981784728",
+    instagramUrl: "https://instagram.com/ojpviaja",
+    allowBack: true
+  };
+
+  /* ============ Conteúdo ============ */
+  var QUESTIONS = [
+    { t: "Hoje, de onde vem a maior parte dos seus leads?", o: [
+      ["A", "Quase não chegam leads novos, dependo de indicação parada", "CAPTACAO"],
+      ["B", "Chegam pelo Instagram, mas eu demoro pra responder", "ATENDIMENTO"],
+      ["C", "Chegam bastante, respondo rápido, mas muitos somem depois do orçamento", "FECHAMENTO"],
+      ["D", "Chegam bem, eu fecho bem, mas tudo é feito no improviso, sem sistema", "ESTRUTURA"]]},
+    { t: "Quando um lead pede um orçamento, o que mais se parece com sua rotina?", o: [
+      ["A", "Eu nem chego a esse ponto com a maioria, eles somem antes", "CAPTACAO"],
+      ["B", "Eu demoro pra montar porque faço tudo do zero toda vez", "ATENDIMENTO"],
+      ["C", "Eu mando rápido, mas ele compara com site e desaparece", "FECHAMENTO"],
+      ["D", "Eu tenho um modelo, mas fica tudo espalhado em conversa e planilha", "ESTRUTURA"]]},
+    { t: "O que mais consome seu tempo numa semana normal?", o: [
+      ["A", "Ficar tentando aparecer mais pra atrair gente nova", "CAPTACAO"],
+      ["B", "Responder mensagem, tirar dúvida, dar satisfação de retorno", "ATENDIMENTO"],
+      ["C", "Justificar preço e tentar convencer quem já recebeu proposta", "FECHAMENTO"],
+      ["D", "Procurar informação antiga, reorganizar coisa perdida, refazer o que já tinha feito", "ESTRUTURA"]]},
+    { t: "Se você pudesse apertar um botão e resolver uma coisa agora, qual seria?", o: [
+      ["A", "Ter mais gente comentando e chamando no direct", "CAPTACAO"],
+      ["B", "Nunca mais perder um lead por demora em responder", "ATENDIMENTO"],
+      ["C", "Fechar sem o cliente comparar comigo com CVC ou Decolar", "FECHAMENTO"],
+      ["D", "Ter tudo num lugar só, sem depender da minha memória", "ESTRUTURA"]]},
+    { t: "Como está seu Instagram hoje?", o: [
+      ["A", "Pouco engajamento, poucos comentários", "CAPTACAO"],
+      ["B", "Engajamento ok, mas o direct vira bagunça", "ATENDIMENTO"],
+      ["C", "Boa audiência, mas pouca gente fecha", "FECHAMENTO"],
+      ["D", "Nem sei dizer, não acompanho isso de perto", "ESTRUTURA"]]},
+    { t: "Isso é algo que você quer resolver agora, investindo pra colocar em prática, ou você ainda está só pesquisando?", o: [
+      ["A", "Quero resolver agora e investir pra colocar em prática", "SIM"],
+      ["B", "Ainda estou só pesquisando", "NAO"]]},
+    { t: "Hoje, qual é o faturamento médio mensal da sua agência?", o: [
+      ["A", "Ainda não tenho faturamento", "NAO"],
+      ["B", "Menos de R$5.000", "SIM"],
+      ["C", "De R$5.000 a R$15.000", "SIM"],
+      ["D", "De R$15.000 a R$30.000", "SIM"],
+      ["E", "Acima de R$30.000", "SIM"]]}
+  ];
+
+  var RESULTS = {
+    CAPTACAO: { label: "CAPTAÇÃO", text: "Você atende bem quem chega, mas pouca gente está chegando até você. Isso não é falta de capacidade, é falta de um sistema que traga lead de forma constante, sem depender só de indicação ou sorte." },
+    ATENDIMENTO: { label: "ATENDIMENTO", text: "Os leads chegam, mas o tempo de resposta e a falta de um fluxo organizado estão custando reserva. Cada minuto de demora é uma chance do cliente ir pra OTA." },
+    FECHAMENTO: { label: "FECHAMENTO", text: "Você tem lead e atende bem, mas na hora de fechar o cliente compara com site e some. Isso é posicionamento, não é preço." },
+    ESTRUTURA: { label: "ESTRUTURA", text: "Sua operação funciona, mas depende inteira da sua memória e do improviso. Isso trava seu crescimento, porque você não consegue escalar o que não está organizado." }
+  };
+
+  var COMMON_PROSE = [
+    { text: "Você atende bem. Monta roteiro bom, conhece destino, cuida do cliente." },
+    { text: "A entrega já está boa. O que falta vem antes dela: captar direito, atender rápido, e fechar sem comparar preço com OTA." },
+    { text: "O lead pede cotação e some. Você compete com site de pacote e com o preço dele. Posta todo dia e não vê cliente novo chegar. Cobra pela passagem, não pelo que você sabe. Trabalha muito e o mês fecha no aperto." },
+    { text: "Você tem esforço de sobra. O que falta é estrutura, e estrutura se constrói." },
+    { text: "É isso que eu vou te mostrar aqui.", strong: true }
+  ];
+
+  var NOT_QUALIFIED_PROSE = [
+    "Isso tem solução, mas agora não parece o momento certo pra você dar esse passo. Sem problema nenhum.",
+    "Continue me acompanhando no Instagram. Vou seguir te mostrando como resolver isso, até fizer sentido pra você aplicar."
+  ];
+
+  var WHY_PROSE = [
+    "Repara no encaixe. Cada peça alimenta a próxima.",
+    "O público certo define pra quem você fala. O sistema organiza o atendimento. A consultoria estruturada dá escopo e preço. Os posts trazem o cliente certo. Tudo isso construído com você, ao vivo, sem depender de equipe.",
+    "Poucas peças, uma operação que você toca por conta, e um cliente que chega pronto em vez de sumir depois da cotação."
+  ];
+
+  var ADVANCE_STEPS = [
+    "Um, você me chama no WhatsApp com o botão abaixo.",
+    "Dois, eu vejo seu diagnóstico e conversamos sobre como isso se encaixa na sua agência.",
+    "Três, se fizer sentido pros dois, eu te mostro o investimento e como funciona."
+  ];
+
+  var BLOCKS = [
+    { num: "01", title: "Primeiro, vamos definir pra quem você fala", paras: [
+      "Quem atende todo mundo compete com todo mundo. Quando você fala pra qualquer viajante, o único critério que sobra pro cliente é o preço, e nesse jogo o site de pacote sempre ganha de você.",
+      "O ajuste começa em falar direto pro cliente que já viajou, já se decepcionou com pacote genérico ou pesquisa própria, e agora quer alguém que entenda de verdade o que ele precisa.",
+      "Quando você fala direto com esse cliente, você para de competir por preço e a especialidade passa a ser o motivo da escolha."]},
+    { num: "02", title: "Segundo, vamos organizar seu atendimento num sistema só", paras: [
+      "Hoje o lead te manda mensagem, você confere no WhatsApp, tenta lembrar o que já foi combinado, procura informação espalhada em conversa antiga e planilha solta. Cada minuto nisso é um minuto que o lead está esperando, e esperando ele lembra que existe OTA.",
+      "Um sistema que junta captação, atendimento e automação resolve isso. Cada lead entra num lugar só, cada etapa fica registrada, nada depende da sua memória.",
+      "Você para de perder reserva por lentidão e passa a responder rápido, porque o sistema já trouxe o histórico pronto."]},
+    { num: "03", title: "Terceiro, vamos montar sua consultoria de viagem estruturada", paras: [
+      "A maioria das agências faz orçamento personalizado do zero pra cada cliente. Gasta horas montando proposta, negocia preço, dá desconto, e no fim entrega barato o que levou o dia inteiro pra construir.",
+      "Uma consultoria de viagem estruturada faz o oposto. Escopo definido, prazo claro, entregáveis nomeados, preço fechado. O cliente lê e entende exatamente o que recebe, em quanto tempo e por quanto.",
+      "A objeção de preço cai porque o valor está claro. O cliente para de perguntar quanto custa e passa a perguntar quando começa."]},
+    { num: "04", title: "Quarto, vamos construir seu Instagram atraindo cliente pronto pra fechar", paras: [
+      "Você não precisa postar todo dia. Precisa do post certo, que fala direto com o cliente que já está pronto pra fechar.",
+      "Existe um tipo de post que não educa nem informa. Ele faz a pessoa certa se reconhecer e te chamar no direct. Com alguns desses posts validados, você tem gente qualificada chegando toda semana.",
+      "A roda começa a girar e não para. Cliente novo chega, comenta, recebe sua proposta."]},
+    { num: "05", title: "Quinto, por que simplificar funciona melhor que contratar", paras: [
+      "A ideia comum é que pra crescer você precisa de equipe: social media, closer, gestor de tráfego. Você até vende mais, mas sobra menos, e perde o controle da operação.",
+      "O caminho contrário funciona melhor pra maioria das agências: sem equipe, você opera por conta com o sistema e a IA como copiloto. Sem reunião de venda, o cliente chega decidido pelo conteúdo. Sem postar todo dia, os posts certos trabalham por semanas.",
+      "Menos peças, menos dependência, mais margem no seu bolso."]},
+    { num: "06", title: "Sexto, como isso é montado com você, ao vivo", paras: [
+      "Tudo que você viu acima, posicionamento, atendimento organizado, consultoria estruturada, posts que atraem o cliente certo, é construído comigo, com Claude como copiloto, em dois encontros ao vivo.",
+      "Você não recebe vídeo pra assistir por conta nem conselho genérico pra aplicar sozinho. Sai de cada encontro com a peça pronta, funcionando, no ar.",
+      "É a Estrutura mais a Consultoria de Posicionamento, aplicadas juntas, com você, do começo ao fim."]}
+  ];
+
+  var TOTAL = QUESTIONS.length;
+
+  /* ============ Estado ============ */
+  var state = { screen: "start", name: "", answers: [], open: {} };
+
+  var app = document.getElementById("app");
+  var wrap = document.getElementById("wrap");
+  var fill = document.getElementById("fill");
+  var stepLabel = document.getElementById("stepLabel");
+
+  /* ============ Helpers ============ */
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function pad2(n) { return ("0" + n).slice(-2); }
+
+  function winner() {
+    var scores = { CAPTACAO: 0, ATENDIMENTO: 0, FECHAMENTO: 0, ESTRUTURA: 0 };
+    state.answers.slice(0, 5).forEach(function (cat, i) {
+      if (cat && scores.hasOwnProperty(cat)) scores[cat] += (i === 3 ? 2 : 1);
+    });
+    var vals = Object.keys(scores).map(function (k) { return scores[k]; });
+    var max = Math.max.apply(null, vals);
+    var top = Object.keys(scores).filter(function (k) { return scores[k] === max; });
+    if (top.length > 1 && state.answers[3] && top.indexOf(state.answers[3]) > -1) return state.answers[3];
+    return top[0];
+  }
+
+  function isQualified() {
+    return state.answers[5] === "SIM" && state.answers[6] === "SIM";
+  }
+
+  function waLink(result, nome) {
+    var digits = String(CONFIG.whatsappNumber).replace(/\D/g, "");
+    var msg = "Oi JP, fiz o Diagnóstico. Meu nome é " + nome +
+      " e meu gargalo é " + result.label +
+      ". Quero entender como aplicar a Estrutura na minha agência.";
+    return "https://wa.me/" + digits + "?text=" + encodeURIComponent(msg);
+  }
+
+  /* ============ Transição ============ */
+  function advance(next) {
+    var screenEl = app.firstElementChild;
+    if (screenEl) {
+      screenEl.classList.add("leaving");
+      setTimeout(function () {
+        state.screen = next;
+        render();
+        if (next === "result") window.scrollTo(0, 0);
+      }, 200);
+    } else {
+      state.screen = next;
+      render();
+    }
+  }
+
+  /* ============ Render de tela ============ */
+  function proseHTML(items) {
+    return items.map(function (p) {
+      var text = typeof p === "string" ? p : p.text;
+      var cls = (p && p.strong) ? ' class="strong"' : "";
+      return "<p" + cls + ">" + esc(text) + "</p>";
+    }).join("");
+  }
+
+  function renderStart() {
+    var nameOk = state.name.trim().length > 0;
+    return '' +
+      '<div class="screen start">' +
+        '<div class="rule"></div>' +
+        '<div class="eyebrow">Diagnóstico</div>' +
+        '<h1>Onde Sua Agência Está Perdendo Reserva</h1>' +
+        '<p class="lede">Poucas perguntas, menos de 3 minutos. Descubra exatamente o que está travando suas vendas hoje.</p>' +
+        '<div class="startform">' +
+          '<label>' +
+            '<span class="fieldlabel">Como você se chama?</span>' +
+            '<input id="nameInput" class="namefield" type="text" autocomplete="given-name" ' +
+              'placeholder="Seu primeiro nome" value="' + esc(state.name) + '" />' +
+          '</label>' +
+          '<div class="startrow">' +
+            '<button id="startBtn" class="btn-primary"' + (nameOk ? "" : " disabled") + '>Começar</button>' +
+            '<span class="hint" id="startHint">' + (nameOk ? "" : "Preencha seu nome") + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderQuestion(idx) {
+    var q = QUESTIONS[idx];
+    var canBack = CONFIG.allowBack && idx > 0;
+    var opts = q.o.map(function (o, i) {
+      return '' +
+        '<button class="opt" data-pick="' + i + '">' +
+          '<span class="letter">' + esc(o[0]) + '</span>' +
+          '<span>' + esc(o[1]) + '</span>' +
+        '</button>';
+    }).join("");
+    return '' +
+      '<div class="screen q">' +
+        '<div class="eyebrow">Pergunta ' + pad2(idx + 1) + ' de ' + pad2(TOTAL) + '</div>' +
+        '<h2>' + esc(q.t) + '</h2>' +
+        '<div class="options">' + opts + '</div>' +
+        (canBack ? '<button class="linkbtn back" data-back="1">Voltar</button>' : "") +
+      '</div>';
+  }
+
+  function renderResult() {
+    var win = winner();
+    var r = RESULTS[win];
+    var nome = state.name.trim();
+    var qualified = isQualified();
+
+    var html = '<div class="screen result">' +
+      '<div class="rule"></div>' +
+      '<div class="eyebrow">Seu resultado</div>' +
+      '<h1>' + esc(nome + ", seu gargalo é " + r.label) + '</h1>' +
+      '<p class="summary">' + esc(r.text) + '</p>' +
+      '<div class="section">' +
+        '<h2>O que trava quase toda agência de viagens</h2>' +
+        '<div class="prose">' + proseHTML(COMMON_PROSE) + '</div>' +
+      '</div>';
+
+    if (!qualified) {
+      html += '<div class="darkcard">' +
+        '<div class="rule"></div>' +
+        '<div class="dark-prose">' +
+          NOT_QUALIFIED_PROSE.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
+        '</div>' +
+        '<a class="btn-gold-link" href="' + esc(CONFIG.instagramUrl) + '" target="_blank" rel="noopener">Seguir no Instagram</a>' +
+      '</div>';
+    } else {
+      var accs = BLOCKS.map(function (b, i) {
+        var openCls = state.open[i] ? " open" : "";
+        return '' +
+          '<div class="acc' + openCls + '" data-acc="' + i + '">' +
+            '<button class="acc-head" data-toggle="' + i + '" aria-expanded="' + (state.open[i] ? "true" : "false") + '">' +
+              '<span class="num">' + esc(b.num) + '</span>' +
+              '<span class="title">' + esc(b.title) + '</span>' +
+              '<span class="sign">+</span>' +
+            '</button>' +
+            '<div class="acc-body">' +
+              '<div class="acc-body-inner">' +
+                b.paras.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      }).join("");
+
+      html += '<div class="plan">' +
+        '<div class="section">' +
+          '<h2>O plano.</h2>' +
+          '<p class="plan-label">Toque pra revelar.</p>' +
+          '<div class="acc-list">' + accs + '</div>' +
+        '</div>' +
+        '<div class="section">' +
+          '<h2>Por que funciona</h2>' +
+          '<div class="prose">' + WHY_PROSE.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + '</div>' +
+        '</div>' +
+        '<div class="darkcard tall">' +
+          '<div class="rule"></div>' +
+          '<h2>Quer colocar esse plano em prática na sua agência?</h2>' +
+          '<p class="intro">É a Estrutura + Consultoria de Posicionamento. Eu aplico com você, ao vivo, em dois encontros. Você sai de lá com o sistema completo no ar e o posicionamento certo pra parar de competir com OTA.</p>' +
+          '<div class="advance-block">' +
+            '<div class="eyebrow">Como avançar</div>' +
+            '<div class="steps">' + ADVANCE_STEPS.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + '</div>' +
+          '</div>' +
+          '<a class="btn-gold-link lg" href="' + esc(waLink(r, nome)) + '" target="_blank" rel="noopener">Quero aplicar isso na minha agência</a>' +
+          '<p class="footnote">Quando essa mensagem chegar, eu já sei exatamente de onde você veio e qual é o seu gargalo. A conversa começa direto no ponto.</p>' +
+        '</div>' +
+      '</div>';
+    }
+
+    html += '<button class="linkbtn restart" data-restart="1">Refazer o diagnóstico</button>' +
+      '</div>';
+    return html;
+  }
+
+  /* ============ Render principal ============ */
+  function render() {
+    var s = state;
+    var isResult = s.screen === "result";
+    var isStart = s.screen === "start";
+    var idx = typeof s.screen === "number" ? s.screen : null;
+
+    var pct = isStart ? 0 : isResult ? 100 : (idx / TOTAL) * 100;
+    fill.style.width = pct + "%";
+    stepLabel.textContent = isStart ? "Menos de 3 minutos" : isResult ? "Resultado" : (idx + 1) + " / " + TOTAL;
+    wrap.classList.toggle("top", isResult);
+
+    if (isStart) app.innerHTML = renderStart();
+    else if (idx !== null) app.innerHTML = renderQuestion(idx);
+    else app.innerHTML = renderResult();
+
+    wire();
+  }
+
+  /* ============ Eventos ============ */
+  function wire() {
+    var s = state;
+
+    var nameInput = document.getElementById("nameInput");
+    if (nameInput) {
+      var startBtn = document.getElementById("startBtn");
+      var startHint = document.getElementById("startHint");
+      var sync = function () {
+        var ok = s.name.trim().length > 0;
+        startBtn.disabled = !ok;
+        startHint.textContent = ok ? "" : "Preencha seu nome";
+      };
+      nameInput.addEventListener("input", function (e) { s.name = e.target.value; sync(); });
+      nameInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && s.name.trim().length > 0) advance(0);
+      });
+      startBtn.addEventListener("click", function () {
+        if (s.name.trim().length > 0) advance(0);
+      });
+    }
+
+    Array.prototype.forEach.call(app.querySelectorAll("[data-pick]"), function (btn) {
+      btn.addEventListener("click", function () {
+        var idx = typeof s.screen === "number" ? s.screen : null;
+        if (idx === null) return;
+        var pickIdx = parseInt(btn.getAttribute("data-pick"), 10);
+        var cat = QUESTIONS[idx].o[pickIdx][2];
+        var answers = s.answers.slice();
+        answers[idx] = cat;
+        s.answers = answers;
+        advance(idx + 1 < TOTAL ? idx + 1 : "result");
+      });
+    });
+
+    var backBtn = app.querySelector("[data-back]");
+    if (backBtn) backBtn.addEventListener("click", function () {
+      var idx = typeof s.screen === "number" ? s.screen : 0;
+      advance(idx - 1);
+    });
+
+    Array.prototype.forEach.call(app.querySelectorAll("[data-toggle]"), function (btn) {
+      btn.addEventListener("click", function () {
+        var i = parseInt(btn.getAttribute("data-toggle"), 10);
+        s.open[i] = !s.open[i];
+        var acc = app.querySelector('[data-acc="' + i + '"]');
+        if (acc) acc.classList.toggle("open", !!s.open[i]);
+        btn.setAttribute("aria-expanded", s.open[i] ? "true" : "false");
+      });
+    });
+
+    var restartBtn = app.querySelector("[data-restart]");
+    if (restartBtn) restartBtn.addEventListener("click", function () {
+      state = { screen: "start", name: "", answers: [], open: {} };
+      app = document.getElementById("app");
+      window.scrollTo(0, 0);
+      render();
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
