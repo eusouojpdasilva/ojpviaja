@@ -1,1 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposta — Specialle Viagens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0E0E;
+    --card:#161616;
+    --line: rgba(201,168,76,0.22);
+    --line-soft: rgba(247,245,240,0.08);
+    --gold:#C9A84C;
+    --off:#F7F5F0;
+    --off-dim: rgba(247,245,240,0.62);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-font-smoothing:antialiased;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--off);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    font-size:16px;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    body{ animation: fadein 0.6s ease-out; }
+  }
+  @keyframes fadein{ from{opacity:0;} to{opacity:1;} }
 
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:64px 24px 96px;
+  }
+
+  h1,h2,h3{
+    font-family:'Montserrat', sans-serif;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+
+  header.top{
+    border-bottom:1px solid var(--line-soft);
+    padding-bottom:32px;
+    margin-bottom:40px;
+  }
+  header.top .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--gold);
+    margin-bottom:14px;
+  }
+  header.top h1{
+    font-size:clamp(28px, 4vw, 36px);
+    line-height:1.25;
+    margin-bottom:10px;
+  }
+  header.top .for{
+    color:var(--off-dim);
+    font-size:16px;
+  }
+
+  .intro{
+    margin-bottom:56px;
+  }
+  .intro p{
+    font-size:17px;
+    color:var(--off-dim);
+    max-width:62ch;
+  }
+  .intro p + p{ margin-top:14px; }
+
+  .paths{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    margin-bottom:56px;
+  }
+  @media (min-width: 720px){
+    .paths{ flex-direction:row; align-items:stretch; }
+    .path{ flex:1; }
+  }
+
+  .path{
+    background:var(--card);
+    border:1px solid var(--line-soft);
+    border-radius:4px;
+    padding:32px 28px;
+    display:flex;
+    flex-direction:column;
+  }
+  .path .caminho{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--off-dim);
+    margin-bottom:12px;
+  }
+  .path h2{
+    font-size:21px;
+    margin-bottom:14px;
+  }
+  .path .price{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--gold);
+    font-size:20px;
+    font-weight:500;
+    margin-bottom:6px;
+  }
+  .path .price-note{
+    color:var(--off-dim);
+    font-size:14px;
+    margin-bottom:22px;
+  }
+  .path p.desc{
+    color:var(--off-dim);
+    font-size:15px;
+    margin-bottom:22px;
+  }
+
+  .steps{
+    list-style:none;
+    margin:0 0 8px 0;
+    padding:0;
+    counter-reset:step;
+  }
+  .steps li{
+    counter-increment:step;
+    position:relative;
+    padding-left:34px;
+    padding-bottom:20px;
+    border-left:1px solid var(--line-soft);
+    margin-left:6px;
+  }
+  .steps li:last-child{
+    border-left:1px solid transparent;
+    padding-bottom:0;
+  }
+  .steps li::before{
+    content:counter(step);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--bg);
+    background:var(--gold);
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:absolute;
+    left:-10px;
+    top:0;
+  }
+  .steps li .step-title{
+    font-weight:600;
+    font-size:15px;
+    margin-bottom:4px;
+  }
+  .steps li .step-body{
+    color:var(--off-dim);
+    font-size:14.5px;
+  }
+
+  .simple-list{
+    list-style:none;
+    margin:0 0 22px 0;
+    padding:0;
+  }
+  .simple-list li{
+    font-size:14.5px;
+    color:var(--off-dim);
+    padding-left:16px;
+    position:relative;
+    margin-bottom:10px;
+  }
+  .simple-list li::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:9px;
+    width:5px;
+    height:5px;
+    background:var(--gold);
+    border-radius:50%;
+  }
+
+  .note{
+    font-size:14px;
+    color:var(--off-dim);
+    margin-bottom:18px;
+  }
+
+  .bonus{
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:16px 18px;
+    margin-bottom:16px;
+    font-size:14.5px;
+    color:var(--off);
+  }
+  .bonus strong{ color:var(--gold); }
+
+  .rec{
+    font-size:13.5px;
+    color:var(--off-dim);
+    border-top:1px solid var(--line-soft);
+    padding-top:16px;
+    margin-top:auto;
+  }
+  .rec strong{ color:var(--off); }
+
+  .choose{
+    margin-bottom:56px;
+  }
+  .choose h3{
+    font-size:18px;
+    margin-bottom:18px;
+  }
+  .choose-row{
+    display:grid;
+    gap:18px;
+  }
+  @media (min-width: 640px){
+    .choose-row{ grid-template-columns:1fr 1fr; }
+  }
+  .choose-row div{
+    font-size:15px;
+    color:var(--off-dim);
+  }
+  .choose-row strong{
+    color:var(--off);
+    display:block;
+    margin-bottom:6px;
+    font-family:'Montserrat', sans-serif;
+    font-weight:600;
+    font-size:15px;
+  }
+
+  .not-included h3{
+    font-size:15px;
+    color:var(--off-dim);
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  footer{
+    margin-top:64px;
+    padding-top:28px;
+    border-top:1px solid var(--line-soft);
+    color:var(--off-dim);
+    font-size:14px;
+  }
+  footer .brand{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--gold);
+    font-size:12px;
+    margin-top:10px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="top">
+      <div class="tag">Proposta comercial</div>
+      <h1>Consultoria e Assessoria Efeito Reservas</h1>
+      <div class="for">Preparada para Anastácia, Specialle Viagens</div>
+    </header>
+
+    <section class="intro">
+      <p>Hoje grande parte da operação depende de você aparecer, decidir e produzir tudo sozinha. Essa proposta organiza o posicionamento, o conteúdo e o atendimento da agência num sistema que funciona mesmo nos dias em que você não está disponível pra gravar ou responder na hora.</p>
+      <p>São dois caminhos. Você escolhe o que faz mais sentido pro momento da agência agora.</p>
+    </section>
+
+    <section class="paths">
+
+      <div class="path">
+        <div class="caminho">Caminho 1</div>
+        <h2>Consultoria de Implementação</h2>
+        <div class="price">R$1.200 à vista</div>
+        <div class="price-note">ou 3x de R$450</div>
+        <p class="desc">Processo de 37 dias, com dois encontros ao vivo comigo.</p>
+
+        <ol class="steps">
+          <li>
+            <div class="step-title">Encontro 1, 90 minutos</div>
+            <div class="step-body">Revisamos o posicionamento que vocês já construíram e formatamos a consultoria de viagens de vocês, nome, promessa e oferta com preço definido. Fica gravado, pra você poder revisar quando quiser.</div>
+          </li>
+          <li>
+            <div class="step-title">Entre os encontros, 7 dias</div>
+            <div class="step-body">Produzo o material completo, posts em carrossel e vídeo, branding book, e a influencer de viagens de vocês, um avatar criado com IA pra manter presença constante no conteúdo mesmo nos dias em que você não está disponível pra aparecer.</div>
+          </li>
+          <li>
+            <div class="step-title">Encontro 2, 90 minutos</div>
+            <div class="step-body">Entrego tudo pronto e treino vocês em cada parte: posts, branding book, influencer configurada, script de qualificação pro WhatsApp, roteiro de reunião com cliente, e a skill personalizada no Claude pra vocês seguirem produzindo sozinhas.</div>
+          </li>
+          <li>
+            <div class="step-title">30 dias de suporte</div>
+            <div class="step-body">Direto comigo no WhatsApp, pra ajustar o que precisar enquanto o material entra em uso.</div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="path">
+        <div class="caminho">Caminho 2</div>
+        <h2>Assessoria Mensal</h2>
+        <div class="price">R$1.500/mês</div>
+        <div class="price-note">verba de tráfego à parte</div>
+        <p class="desc">Pra quem quer sair direto pra crescimento contínuo, sem passar pela implementação isolada primeiro. Inclui todo o escopo do Caminho 1 e soma automação de atendimento e gestão de tráfego pago.</p>
+
+        <ul class="simple-list">
+          <li>Conteúdo, posicionamento e influencer de viagens, o escopo completo do Caminho 1</li>
+          <li>Automação de atendimento no WhatsApp, configurada e otimizada</li>
+          <li>Gestão de campanhas de tráfego pago direcionadas pra captação de leads</li>
+          <li>Relatório mensal de resultados</li>
+        </ul>
+
+        <p class="note">Recomendo começar entre R$600 e R$900 por mês de verba de tráfego, à parte da mensalidade. Esse valor vai direto pra plataforma de anúncios, não fica comigo.</p>
+
+        <div class="bonus">
+          <strong>Bônus fechando a Assessoria:</strong> você leva o Caminho 1 completo, incluído sem custo adicional, mais uma página de captação de leads com formulário de qualificação em etapas, valor R$850. O formulário filtra o perfil de quem preenche antes de cair no seu WhatsApp, então a mensagem já chega qualificada.
+        </div>
+
+        <div class="rec"><strong>Recomendação:</strong> comprometer um mínimo de 3 meses. Fechando a Assessoria você já sai com R$2.050 em entregas inclusas, e esse investimento só se paga se o contrato durar tempo suficiente pra tráfego pago e automação maturarem.</div>
+      </div>
+
+    </section>
+
+    <section class="choose">
+      <h3>Como escolher</h3>
+      <div class="choose-row">
+        <div>
+          <strong>Caminho 1</strong>
+          Se a prioridade agora é organizar o que já existe e ganhar clareza de posicionamento sem compromisso mensal, o Caminho 1 resolve isso em 37 dias.
+        </div>
+        <div>
+          <strong>Caminho 2</strong>
+          Se a prioridade é crescer com previsibilidade e tirar de você o peso de gerar lead sozinha, o Caminho 2 já entrega tudo isso, com escala.
+        </div>
+      </div>
+    </section>
+
+    <section class="not-included">
+      <h3>Não inclui</h3>
+      <ul class="simple-list">
+        <li>Verba de tráfego pago no Caminho 2, o investimento nos anúncios é separado da mensalidade</li>
+        <li>Produção de vídeos ou fotos originais além do que já for fornecido pela agência</li>
+      </ul>
+    </section>
+
+    <footer>
+      Qualquer dúvida sobre a proposta, me chama.
+      <div class="brand">Efeito Reservas</div>
+    </footer>
+
+  </div>
+</body>
+</html>
