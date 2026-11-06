@@ -40,3 +40,11 @@ document.querySelectorAll('[data-wa]').forEach(a=>{a.href='https://wa.me/'+phone
   document.querySelectorAll('.steps li').forEach(el => stepObserver.observe(el));
 })();
 
+const tickerButton = document.querySelector('.ticker-toggle');
+if (tickerButton) tickerButton.addEventListener('click', () => {
+  const paused = tickerButton.parentElement.classList.toggle('is-paused');
+  tickerButton.setAttribute('aria-pressed', String(paused));
+  tickerButton.setAttribute('aria-label', paused ? 'Retomar movimento da faixa' : 'Pausar movimento da faixa');
+  tickerButton.textContent = paused ? '▶' : 'Ⅱ';
+});
+
