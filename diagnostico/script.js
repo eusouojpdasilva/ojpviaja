@@ -59,6 +59,22 @@
     });
   }
 
+  // Grava o lead no CRM do JP. De propósito sem await e com o erro engolido:
+  // se a rede falhar, a pessoa segue para o WhatsApp do mesmo jeito, que é o
+  // que importa. O endpoint confere origem, formato e teto por IP.
+  const CRM_LEAD = 'https://crm.eusouojoaopaulo.com.br/lead';
+  const enviarParaCrm = dados => {
+    try {
+      fetch(CRM_LEAD, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados),
+        keepalive: true,
+        mode: 'cors'
+      }).catch(() => {});
+    } catch (erro) { /* nada a fazer, o WhatsApp continua */ }
+  };
+
   const diagnostic = document.querySelector('#diagnostic-flow');
   if (diagnostic) {
     const section = document.querySelector('#diagnostico-form');
@@ -178,6 +194,8 @@
         window.fbq('track', 'Lead');
         leadTracked = true;
       }
+      enviarParaCrm({ nome: name, whatsapp: phoneField.value, respostas: answers });
+
       const message = [
         '#Diagnóstico Efeito Reservas',
         '',
@@ -220,11 +238,11 @@
     });
 
   }
-  document.querySelector('.privacy-link').addEventListener('click', event => {
+  document.querySelectorAll('.privacy-link').forEach(link => link.addEventListener('click', event => {
     event.preventDefault();
     privacy.showModal();
-  });
-  document.querySelector('.dialog-close').addEventListener('click', () => privacy.close());
+  }));
+  document.querySelector('.dialog-close')?.addEventListener('click', () => privacy.close());
   privacy.addEventListener('click', event => {
     const box = privacy.getBoundingClientRect();
     if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) privacy.close();
