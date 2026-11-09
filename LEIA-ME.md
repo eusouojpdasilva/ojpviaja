@@ -12,7 +12,9 @@ Repositório único das páginas do O JP Viaja. Um projeto na Cloudflare, o
 | `/diagnostico/` | Diagnóstico Efeito Reservas | `diagnostico.ojpviaja.com.br` |
 | `/diagnostico/versao2/` | O JP Viaja, versão estática antiga | `ojpviaja.com.br/diagnostico/versao2/` |
 | `/propostas/<cliente>/` | Proposta comercial por cliente | `propostas.ojpviaja.com.br` |
-| `/_arquivo/` | Versões aposentadas, fora do deploy | nenhum |
+
+Tudo que está aqui é publicado. Versão aposentada não fica em pasta, fica no
+histórico do git, para não ganhar endereço público sem querer.
 
 ## Como os domínios chegam na pasta certa
 
@@ -42,3 +44,10 @@ O `vercel.json` liga a barra final, para `/diagnostico` redirecionar para
 A página do diagnóstico vinha do repositório `diagnostico-efeito`, aposentado em
 09/11/2026. A página de links era upload direto no projeto `ojpviaja-links`,
 sem repositório, e passou a viver aqui na mesma data.
+
+O quiz antigo do diagnóstico, que ocupava `/diagnostico/` até 09/11/2026, está
+no histórico. Para recuperar:
+
+```
+git show 5906ad0^:diagnostico/index.html > quiz-antigo.html
+```
